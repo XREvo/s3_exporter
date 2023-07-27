@@ -270,7 +270,7 @@ func main() {
 	cfg.WithS3ForcePathStyle(*forcePathStyle)
 
 	if true == *debugMode {
-		cfg.WithLogLevel(aws.LogDebugWithHTTPBody)
+		cfg.WithLogLevel(aws.LogDebugWithRequestErrors)
 	}
 
 	svc := s3.New(sess, cfg)
