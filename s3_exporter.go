@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	"time"
+	"fmt"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -103,6 +104,8 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		Delimiter: aws.String(e.delimiter),
 	}
 
+	var runTrip int = 0
+
 	// Continue making requests until we've listed and compared the date of every object
 	startList := time.Now()
 	for {
@@ -130,6 +133,8 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 			break
 		}
 		query.ContinuationToken = resp.NextContinuationToken
+		runTrip++
+		log.Infoln(fmt.Sprintf("runTrip %d : %d objects / size : %d", runTrip, numberOfObjects, totalSize))
 	}
 	listDuration := time.Now().Sub(startList).Seconds()
 
@@ -254,10 +259,13 @@ func main() {
 
 	cfg := aws.NewConfig()
 	if *endpointURL != "" {
+	log.Infoln("endpointURL", *endpointURL)
 		cfg.WithEndpoint(*endpointURL)
 	}
 
+	log.Infoln("disableSSL", *disableSSL)
 	cfg.WithDisableSSL(*disableSSL)
+	log.Infoln("forcePathStyle", *forcePathStyle)
 	cfg.WithS3ForcePathStyle(*forcePathStyle)
 
 	svc := s3.New(sess, cfg)
