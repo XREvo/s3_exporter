@@ -242,6 +242,7 @@ func main() {
 		endpointURL    = app.Flag("s3.endpoint-url", "Custom endpoint URL").Default("").String()
 		disableSSL     = app.Flag("s3.disable-ssl", "Custom disable SSL").Bool()
 		forcePathStyle = app.Flag("s3.force-path-style", "Custom force path style").Bool()
+		debugMode      = app.Flag("s3.debug-mode", "Custom force path style").Bool()
 	)
 
 	log.AddFlags(app)
@@ -267,6 +268,10 @@ func main() {
 	cfg.WithDisableSSL(*disableSSL)
 	log.Infoln("forcePathStyle", *forcePathStyle)
 	cfg.WithS3ForcePathStyle(*forcePathStyle)
+
+	if true == *debugMode {
+		cfg.WithLogLevel(aws.LogDebugWithHTTPBody)
+	}
 
 	svc := s3.New(sess, cfg)
 
