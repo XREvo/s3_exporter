@@ -92,7 +92,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 // Collect metrics
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	var lastModified time.Time
-	var numberOfObjects float64
+	var numberOfObjects int64
 	var totalSize int64
 	var biggestObjectSize int64
 	var lastObjectSize int64
